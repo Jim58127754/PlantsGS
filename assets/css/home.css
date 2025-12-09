@@ -1,0 +1,124 @@
+/* ---------------------------------------
+   home.css
+   Homeページ専用スタイル
+---------------------------------------- */
+
+/* 言語ボタン */
+.lang-buttons {
+    position: absolute;
+    top: 70px;
+    right: 70px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.lang-buttons .en {
+    opacity: 1;
+}
+
+.lang-buttons .jp {
+    opacity: 0.3;
+}
+
+.lang-buttons div {
+    user-select: none;
+    cursor: pointer;
+    font-family: "Didact Gothic", "Zen Kaku Gothic New", sans-serif;
+}
+
+.lang-buttons .slash {
+    opacity: 0.5;
+}
+
+/* ロゴ配置（中央基準＋横オフセット） */
+.home-logo {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(calc(-50% + 380px));
+    height: 110px;
+}
+
+.growth-logo {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(calc(-50% - 390px)); /* ここは後で微調整 */
+    height: 110px;
+}
+
+/* 説明テキスト */
+.desc-box {
+    position: absolute;
+    left: 50%;
+    top: 600px;  /* home_logo中心 + 300px → 必要なら後で調整 */
+    transform: translateX(calc(-50% + 380px));
+    width: 670px;
+    line-height: 1.6;
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.white-bar-wrapper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(calc(-50% + 23px));
+    top: 300px;
+
+    /* wrapper は幅なしでOK（中のバーが右方向へ伸びる） */
+    height: 110px;
+}
+.white-bar {
+    width: 5px;               /* 初期幅 */
+    height: 108px;
+    background: white;
+
+    position: absolute;
+    right: 0;                 /* ← wrapper の右端に固定 */
+    top: 0;
+
+    transform-origin: right center;
+    transition: width 1s ease, background 0.3s ease;
+}
+
+.white-bar.expand {
+    width: 700px;             /* ← 左方向へ 600px 伸びる */
+}
+
+.white-bar.active {
+    background: none;
+    background-image: url("../images/test_head.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+
+
+/* 001_Title */
+.title-list {
+    position: absolute;
+    left: 50%;
+    transform: translateX(calc(-50% - 280px));
+    top: 0;
+    width: 600px;
+    height: 100vh;
+    overflow: hidden;     /* ← 必須 */
+}
+.title-list::-webkit-scrollbar { display: none; }
+
+.plant-title {
+    position: absolute;
+    font-size: 48px;
+    font-family: "all-round-gothic", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: rgba(255,255,255,0.3);
+    height: 100px;        /* スナップの高さと一致 */
+    line-height: 100px;   /* 垂直位置を合わせる */
+    user-select: none;
+    cursor: pointer;
+}
+

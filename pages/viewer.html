@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>3DGS Viewer</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        #canvas { 
+            width: 100vw; 
+            height: 100vh; 
+            display: block;
+        }
+
+        /* 左上の日付表示 */
+        #dateLabel {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            color: white;
+            font-size: 18px;
+            font-family: sans-serif;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        /* 右側中央の縦スライダー */
+        #sliderContainer {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 500px;
+            display: flex;
+            align-items: center;
+        }
+
+        #slider {
+            writing-mode: vertical-rl;
+            direction: rtl;
+            width: 20px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="dateLabel"></div>
+
+    <div id="sliderContainer">
+        <input type="range" id="slider" min="0" max="1" value="0" step="1">
+    </div>
+
+    <script type="module">
+        import * as SPLAT from 'https://cdn.jsdelivr.net/npm/gsplat@latest';
+
+        const canvas = document.getElementById('canvas');
+        const dateLabel = document.getElementById('dateLabel');
+        const slider = document.getElementById('slider');
+
+        const renderer = new SPLAT.WebGLRenderer(canvas);
+        let scene; 
+        const camera = new SPLAT.Camera();
+        const controls = new SPLAT.OrbitControls(camera, canvas);
+
+        function onWindowResize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', onWindowResize);
+
+        // === 設定 ===
+        const DEFAULT_FILE = "11_27_2025.splat";
+        const DATA_FOLDER = "../assets/data/3dgs";
+
+        let files = [];     // ソート後のファイル名一覧
+        let currentIndex = 0;
+
+        // ---------- ファイル名から日付順にソート ----------
+        function parseDateFromFilename(name) {
+            // 例: 11_27_2025.splat → [11, 27, 2025]
+            const base = name.replace(".splat", "");
+            const [m, d, y] = base.split("_").map(n => parseInt(n));
+            return new Date(y, m - 1, d);
+        }
+
+        async function getFileList() {
+            // GSdata フォルダ内のファイル一覧を取得（サーバで index を返す必要あり）
+            const res = await fetch(DATA_FOLDER + "/");
+            const text = await res.text();
+
+            // HTML directory listing から .splat を抽出
+            const regex = /href="([^"]+\.splat)"/g;
+            const found = [];
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                found.push(match[1]);
+            }
+
+            files = found.sort((a, b) =>
+                parseDateFromFilename(a) - parseDateFromFilename(b)
+            );
+        }
+
+        // ---------- ロード & 表示 ----------
+        async function loadFile(filename) {
+            scene = new SPLAT.Scene();
+
+            await SPLAT.Loader.LoadAsync(`${DATA_FOLDER}/${filename}`, scene);
+
+            dateLabel.textContent = filename.replace(".splat", "");
+            console.log("Loaded:", filename);
+        }
+
+        // ---------- メイン処理 ----------
+        async function init() {
+
+            await getFileList(); // フォルダのファイル一覧取得
+
+            // スライダー設定
+            slider.max = files.length - 1;
+
+            // デフォルトファイルのインデックス取得
+            currentIndex = files.indexOf(DEFAULT_FILE);
+            if (currentIndex === -1) currentIndex = 0;
+            slider.value = currentIndex;
+
+            await loadFile(files[currentIndex]);
+
+            // スライダーを動かしたら読み込み
+            slider.addEventListener("input", async () => {
+                const i = parseInt(slider.value);
+                if (i !== currentIndex) {
+                    currentIndex = i;
+                    await loadFile(files[currentIndex]);
+                }
+            });
+
+            animate();
+        }
+
+        // ---------- 描画ループ ----------
+        function animate() {
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        init();
+    </script>
+</body>
+</html>

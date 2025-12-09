@@ -1,0 +1,117 @@
+/* ---------------------------------------
+   base.css
+   全ページ共通の基本設定
+---------------------------------------- */
+
+/* Google Fonts 読み込み */
+@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap');
+
+/* Adobe Fonts 読み込み（All Round Gothic） */
+@import url('https://use.typekit.net/vzh5ojw.css');
+
+/* -------------------------
+   Reset（最低限）
+------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -------------------------
+   背景設定
+   - ページを開いた1秒だけ白
+   - それ以外は黒
+------------------------- */
+html, body {
+    width: 100%;
+    height: 100%;
+    background: white;               /* 初期：白 */
+    color: white;
+    font-family: "Didact Gothic", "Zen Kaku Gothic New", sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;  
+    -webkit-font-smoothing: antialiased;
+    transition: background 1s ease;
+}
+
+body.loaded {
+    background: black;               /* 1秒後に黒へ */
+}
+
+/* -------------------------
+   フォントプリセット
+------------------------- */
+
+/* 見出し（All Round Gothic） */
+.font-heading {
+    font-family: "all-round-gothic", sans-serif;
+}
+
+/* 英文の細かい文字（Didact Gothic） */
+.font-en {
+    font-family: "Didact Gothic", sans-serif;
+}
+
+/* 日本語細文（Zen Kaku Gothic New） */
+.font-jp {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+}
+
+/* -------------------------
+   カーソル & 選択禁止
+------------------------- */
+.noselect {
+    user-select: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.default {
+    cursor: default;
+}
+
+/* -------------------------
+   中央揃えユーティリティ
+------------------------- */
+.center-x {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.center-y {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.center-xy {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* -------------------------
+   フェード用（汎用）
+------------------------- */
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.fade-in.show {
+    opacity: 1;
+}
+
+/* -------------------------
+   透明度ユーティリティ
+------------------------- */
+.opacity-100 { opacity: 1; }
+.opacity-70  { opacity: 0.7; }
+.opacity-50  { opacity: 0.5; }
+.opacity-30  { opacity: 0.3; }
+
